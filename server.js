@@ -16,10 +16,21 @@ const userRoutes     = require('./routes/userRoutes')
 
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173',                 // local dev
+  'https://rumaisag.github.io',            // frontend deployed on GitHub Pages
+];
+
 app.use(cors({
-  origin:      process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true   // allow cookies
-}))
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true
+}));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
