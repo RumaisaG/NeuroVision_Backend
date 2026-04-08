@@ -20,9 +20,9 @@ function signRefreshToken(id) {
 
 const refreshCookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
-  maxAge: 5 * 60 * 1000
+  secure: true,
+  sameSite: 'none',
+  maxAge: 5 * 24 * 60 * 60 * 1000
 }
 
 // send token in HTTP-only cookie
