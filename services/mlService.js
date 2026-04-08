@@ -1,10 +1,8 @@
-const fs = require('fs');
-const dotenv = require('dotenv');
-
-const envFile = fs.existsSync('.env') ? '.env' : '.env.modal';
-dotenv.config({ path: envFile });
+const axios    = require('axios')
+require('dotenv').config();
 
 const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
+
 console.log("Using ML URL:", ML_URL);
 
 // Class label mapping 
