@@ -1,5 +1,5 @@
-const axios    = require('axios')
 require('dotenv').config();
+const axios    = require('axios')
 
 const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
 
