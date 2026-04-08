@@ -6,7 +6,7 @@ const { protect } = require('../middleware/authMiddleware')
 // All analysis routes require authentication
 router.use(protect)
 
-router.get('/',              getMyAnalyses)      // GET /api/analyses
-router.get('/scan/:scanId',  getAnalysisByScan)  // GET /api/analyses/scan/:scanId
+router.get('/',              getMyAnalyses)      
+router.get('/scan/:scanId',  getAnalysisByScan) 
 
 module.exports = router
