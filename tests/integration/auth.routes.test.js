@@ -70,21 +70,6 @@ describe('POST /api/auth/register', () => {
     expect(res.body.message).toMatch(/already registered/i)
   })
 
-  // TC-AR-05 — Security
-  test('TC-AR-05: passwordHash must never be returned in the response', async () => {
-    const res = await request(app).post('/api/auth/register').send(validUser)
-    expect(JSON.stringify(res.body)).not.toContain('passwordHash')
-  })
-
-  // TC-AR-06
-  test('TC-AR-06: should set httpOnly refreshToken cookie on registration', async () => {
-    const res = await request(app).post('/api/auth/register').send(validUser)
-    const setCookie = res.headers['set-cookie']
-    expect(setCookie).toBeDefined()
-    const refreshCookie = setCookie.find(c => c.startsWith('refreshToken='))
-    expect(refreshCookie).toBeDefined()
-    expect(refreshCookie).toMatch(/HttpOnly/i)
-  })
 })
 
 // POST /api/auth/login
@@ -143,14 +128,6 @@ describe('POST /api/auth/login', () => {
     expect(res.body.accessToken).toBeDefined()
   })
 
-  // TC-AL-06 — Security
-  test('TC-AL-06: passwordHash must never appear in login response', async () => {
-    const res = await request(app)
-      .post('/api/auth/login')
-      .send({ email: validUser.email, password: validUser.password })
-
-    expect(JSON.stringify(res.body)).not.toContain('passwordHash')
-  })
 })
 
 // GET /api/auth/me

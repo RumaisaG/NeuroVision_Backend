@@ -88,26 +88,37 @@ const login = async (req, res) => {
         message: 'Email and password are required.'
       });
     }
-  
+
+    // Prevent NoSQL injection by enforcing string types
+    if (typeof email !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Invalid input format.'
+      });
+    }
+
     const user = await User.findOne({
       email: email.toLowerCase().trim()
     }).select('+passwordHash');
-  
 
     if (!user || !(await user.comparePassword(password))) {
-       return res.status(401).json({ status: 'fail', message: 'Invalid email or password.' }); 
+      return res.status(401).json({
+        status: 'fail',
+        message: 'Invalid email or password.'
+      });
     }
 
     if (!user.isActive) {
       return res.status(403).json({
         status: 'fail',
-        message: 'Account deactivated.'
+        message: 'Account deactivated. Contact support.'
       });
     }
 
     sendToken(user, 200, res);
 
   } catch (err) {
+    console.error('[Login Error]', err);
     return res.status(500).json({
       status: 'error',
       message: 'Something went wrong. Please try again.'

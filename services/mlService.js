@@ -1,9 +1,6 @@
-require('dotenv').config();
 const axios    = require('axios')
 
-const ML_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
-
-console.log("Using ML URL:", ML_URL);
+const ML_URL     = process.env.ML_SERVICE_URL || 'http://localhost:8000'
 
 // Class label mapping 
 const CLASS_MAP = {

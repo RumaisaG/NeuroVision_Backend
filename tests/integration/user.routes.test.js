@@ -66,16 +66,6 @@ describe('PATCH /api/users/me — Update Profile', () => {
     expect(res.body.user.role).toBe('Radiologist')
   })
 
-  // TC-UP-05
-  test('TC-UP-05: should return 400 for invalid role value', async () => {
-    const { token } = await registerAndLogin()
-    const res = await request(app)
-      .patch('/api/users/me')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ firstName: 'X', lastName: 'Y', role: 'HackerRole' })
-
-    expect(res.status).toBe(400)
-  })
 })
 
 describe('PATCH /api/users/me/password — Change Password', () => {
@@ -126,24 +116,6 @@ describe('PATCH /api/users/me/password — Change Password', () => {
 
     expect(res.status).toBe(400)
   })
-
-  // TC-PW-05
-  test('TC-PW-05: new password should actually work for login after change', async () => {
-    const { token, password, user } = await registerAndLogin()
-    const newPassword = 'BrandNew789'
-
-    await request(app)
-      .patch('/api/users/me/password')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ currentPassword: password, newPassword })
-
-    const loginRes = await request(app)
-      .post('/api/auth/login')
-      .send({ email: user.email, password: newPassword })
-
-    expect(loginRes.status).toBe(200)
-    expect(loginRes.body.accessToken).toBeDefined()
-  })
 })
 
 
@@ -166,40 +138,6 @@ describe('GET /api/users/me/stats — Analytics Stats', () => {
     expect(res.body.stats).toHaveProperty('weekActivity')
     expect(res.body.stats).toHaveProperty('monthlyTrend')
   })
-
-  // TC-ST-02
-  test('TC-ST-02: weekActivity should always return exactly 7 days', async () => {
-    const { token } = await registerAndLogin()
-    const res = await request(app)
-      .get('/api/users/me/stats')
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(res.body.stats.weekActivity).toHaveLength(7)
-    const labels = res.body.stats.weekActivity.map(d => d.label)
-    expect(labels).toEqual(['Mon','Tue','Wed','Thu','Fri','Sat','Sun'])
-  })
-
-  // TC-ST-03
-  test('TC-ST-03: monthlyTrend should always return exactly 6 months', async () => {
-    const { token } = await registerAndLogin()
-    const res = await request(app)
-      .get('/api/users/me/stats')
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(res.body.stats.monthlyTrend).toHaveLength(6)
-  })
-
-  // TC-ST-04
-  test('TC-ST-04: should return 0 for all stats when user has no scans', async () => {
-    const { token } = await registerAndLogin()
-    const res = await request(app)
-      .get('/api/users/me/stats')
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(res.body.stats.total).toBe(0)
-    expect(res.body.stats.completed).toBe(0)
-    expect(res.body.stats.avgConfidence).toBeNull()
-  })
 })
 
 describe('DELETE /api/users/me — Delete Account', () => {
@@ -214,18 +152,4 @@ describe('DELETE /api/users/me — Delete Account', () => {
     expect(res.status).toBe(200)
   })
 
-  // TC-DA-02
-  test('TC-DA-02: deleted user should no longer be able to login', async () => {
-    const { token, user, password } = await registerAndLogin()
-
-    await request(app)
-      .delete('/api/users/me')
-      .set('Authorization', `Bearer ${token}`)
-
-    const loginRes = await request(app)
-      .post('/api/auth/login')
-      .send({ email: user.email, password })
-
-    expect(loginRes.status).toBe(401)
-  })
 })

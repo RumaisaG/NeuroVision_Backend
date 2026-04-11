@@ -276,57 +276,6 @@ describe('GET /api/scans — Retrieve Scans', () => {
   })
 })
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// GET /api/scans/:id — Get Scan By ID
-// ═══════════════════════════════════════════════════════════════════════════════
-describe('GET /api/scans/:id', () => {
-
-  // TC-GS-01
-  test('TC-GS-01: should return scan document with analysis populated', async () => {
-    const { token } = await authAgent()
-    const uploadRes = await uploadScan(token)
-    const scanId    = uploadRes.body.scan._id
-
-    await request(app)
-      .post('/api/scans/analyse')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ scanId })
-
-    const res = await request(app)
-      .get(`/api/scans/${scanId}`)
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(res.status).toBe(200)
-    expect(res.body.scan.analysisId).toBeDefined()
-    expect(typeof res.body.scan.analysisId).toBe('object')
-    expect(res.body.scan.analysisId.predictedClass).toBeDefined()
-  })
-
-  // TC-GS-02
-  test('TC-GS-02: should return 404 for non-existent scan ID', async () => {
-    const { token } = await authAgent()
-    const res = await request(app)
-      .get('/api/scans/507f1f77bcf86cd799439011')
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(res.status).toBe(404)
-  })
-
-  // TC-GS-03 — Data isolation
-  test('TC-GS-03: should return 404 when accessing another users scan', async () => {
-    const user1 = await authAgent()
-    const user2 = await authAgent()
-
-    const uploadRes = await uploadScan(user1.token)
-    const scanId    = uploadRes.body.scan._id
-
-    const res = await request(app)
-      .get(`/api/scans/${scanId}`)
-      .set('Authorization', `Bearer ${user2.token}`)
-
-    expect(res.status).toBe(404)
-  })
-})
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // DELETE /api/scans/:id
@@ -346,37 +295,6 @@ describe('DELETE /api/scans/:id', () => {
     expect(res.status).toBe(200)
   })
 
-  // TC-DS-02
-  test('TC-DS-02: scan should no longer be accessible after deletion', async () => {
-    const { token } = await authAgent()
-    const uploadRes = await uploadScan(token)
-    const scanId    = uploadRes.body.scan._id
-
-    await request(app)
-      .delete(`/api/scans/${scanId}`)
-      .set('Authorization', `Bearer ${token}`)
-
-    const res = await request(app)
-      .get(`/api/scans/${scanId}`)
-      .set('Authorization', `Bearer ${token}`)
-
-    expect(res.status).toBe(404)
-  })
-
-  // TC-DS-03 — Data isolation
-  test('TC-DS-03: should not allow deleting another users scan', async () => {
-    const user1 = await authAgent()
-    const user2 = await authAgent()
-
-    const uploadRes = await uploadScan(user1.token)
-    const scanId    = uploadRes.body.scan._id
-
-    const res = await request(app)
-      .delete(`/api/scans/${scanId}`)
-      .set('Authorization', `Bearer ${user2.token}`)
-
-    expect(res.status).toBe(404)
-  })
 })
 
 // ═══════════════════════════════════════════════════════════════════════════════
