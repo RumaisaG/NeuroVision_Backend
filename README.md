@@ -96,8 +96,7 @@ backend/
 │   │   ├── scan.routes.test.js
 │   │   ├── security.blackbox.test.js
 │   │   └── user.routes.test.js
-│   ├── performance/
-│   │   └── performance.test.js
+│   │   
 │   ├── unit/
 │   │   ├── services/
 │   │   │   ├── analysisService.test.js
