@@ -99,7 +99,7 @@ async function changePassword(req, res) {
 }
 
 
-
+// to retrieve data about the user scanned data 
 async function getStats(req, res) {
   try {
     const userId = req.user.id
@@ -175,7 +175,7 @@ async function getStats(req, res) {
   }
 }
 
-
+// function to delete user account from user collection
 async function deleteAccount(req, res) {
   try {
     await Scan.deleteMany({ userId: req.user.id })
@@ -193,7 +193,6 @@ async function deleteAccount(req, res) {
     res.status(500).json({ message: err.message })
   }
 }
-
 
 function buildWeekActivity(scans) {
   const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']

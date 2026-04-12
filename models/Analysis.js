@@ -23,7 +23,7 @@ const analysisSchema = new mongoose.Schema(
 
     // Grad-CAM 
     // Absolute path on disk where the Grad-CAM PNG was saved
-    gradCamPath: { type: String, default: '' },  // Supabase path: "gradcam/abc-gradcam.png"
+    gradCamPath: { type: String, default: '' },  // Supabase path
     gradCamUrl:  { type: String, default: '' },  // Full Supabase public URL
 
     

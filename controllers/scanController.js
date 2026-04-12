@@ -63,7 +63,7 @@ async function uploadScan(req, res, next) {
     return next(err)
   }
 }
-
+// function to analyse the mri scan by calling the ml service
 async function analyseScan(req, res, next) {
   const { scanId } = req.body  
 
@@ -160,9 +160,7 @@ async function analyseScan(req, res, next) {
         gradCamUrl:     analysis.gradCamUrl,
       })
  
-      // Use JSON round-trip to strip ALL Mongoose internals (Maps, Documents,
-      // ObjectIds) and produce guaranteed plain JS objects.
-      // This is safer than .toObject() alone for nested/mixed schema types.
+    
       const plainScan     = JSON.parse(JSON.stringify(scan.toObject()))
       const plainAnalysis = JSON.parse(JSON.stringify(analysis.toObject()))
  
@@ -249,8 +247,7 @@ async function downloadReport(req, res, next) {
       return res.status(404).json({ status: 'fail', message: 'No report has been generated for this scan yet.' })
     }
  
-    // Fetch the PDF from Supabase server-side (no CORS restriction here —
-    // server-to-server requests are not subject to browser CORS policy)
+    // Fetch the PDF from Supabase server-side 
     let supabaseResponse
     try {
       supabaseResponse = await axios.get(scan.reportUrl, {
